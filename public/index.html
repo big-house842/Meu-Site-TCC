@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dicionário das Artistas Paranaenses</title>
+    <link rel="icon" href="imagens/icone.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/responsive.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <main class="container">
+      <!-- Seção de Apresentação -->
+      <section class="presentation-section">
+        <button class="section-button">
+          <span>Apresentação do nosso trabalho</span>
+        </button>
+        <div class="section-content">
+          <div class="presentation-content">
+            <div class="presentation-text">
+              <p>
+                Um projeto dedicado a documentar e celebrar a trajetória das
+                mulheres que contribuíram para as artes no estado do Paraná.
+              </p>
+            </div>
+          </div>
+
+          <div class="presentation-highlight">
+            "A arte é a expressão mais pura da alma humana."
+          </div>
+
+          <!-- Carousel Automático -->
+          <div class="automatic-carousel">
+            <div class="carousel-itens">
+              <img
+                class="img-carousel"
+                src="imagens/carousel-1.jpg"
+                alt="Apresentação do projeto 1"
+                onerror="this.src='imagens/placeholder.jpg'"
+              />
+              <img
+                class="img-carousel"
+                src="imagens/carousel-2.jpg"
+                alt="Apresentação do projeto 2"
+                onerror="this.src='imagens/placeholder.jpg'"
+              />
+              <img
+                class="img-carousel"
+                src="imagens/carousel-3.jpg"
+                alt="Apresentação do projeto 3"
+                onerror="this.src='imagens/placeholder.jpg'"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção Artistas -->
+      <section class="artists-section">
+        <button class="section-button">
+          <span>Artistas</span>
+        </button>
+
+        <div class="artists-carousel-container">
+          <button
+            class="carousel-arrow carousel-arrow-left"
+            aria-label="Artista anterior"
+          >
+            &#10094;
+          </button>
+
+          <div class="artists-carousel">
+            <div class="artists-carousel-track" id="artistsCarouselTrack">
+              <!-- Os cards serão inseridos aqui via JavaScript -->
+              <div class="artists-loading">
+                <p>Carregando artistas...</p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="carousel-arrow carousel-arrow-right"
+            aria-label="Próxima artista"
+          >
+            &#10095;
+          </button>
+        </div>
+      </section>
+
+      <!-- Seção Sobre o Projeto -->
+      <section class="project-section">
+        <button class="section-button">
+          <span>Sobre o Projeto</span>
+        </button>
+
+        <div class="section-content">
+          <div class="project-grid">
+            <div class="project-card">
+              <div class="project-icon">🎯</div>
+              <h3>Missão</h3>
+              <p>
+                Documentar e preservar a história das artistas paranaenses,
+                garantindo que suas contribuições sejam reconhecidas e
+                valorizadas.
+              </p>
+            </div>
+
+            <div class="project-card">
+              <div class="project-icon">👥</div>
+              <h3>Equipe</h3>
+              <p>
+                Projeto desenvolvido por pesquisadores e estudantes
+                comprometidos com a preservação da cultura paranaense.
+              </p>
+            </div>
+
+            <div class="project-card">
+              <div class="project-icon">📚</div>
+              <h3>Acervo</h3>
+              <p>
+                Coleção em constante expansão com biografias, obras e histórias
+                de artistas mulheres do Paraná.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/auth-frontend.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/artistas.js"></script>
+  </body>
+</html>

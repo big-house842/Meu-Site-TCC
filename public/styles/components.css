@@ -1,0 +1,79 @@
+:root {
+  --bg: #f6f8fb;
+  --surface: #fff;
+  --muted: #8892a6;
+  --primary: #2157c4;
+  --accent: #e74c3c;
+  --success: #27ae60;
+  --shadow-sm: 0 6px 18px rgba(32, 40, 60, 0.06);
+}
+
+.component-loader {
+  text-align: center;
+  padding: 12px;
+  color: var(--muted);
+  font-size: 14px
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.06);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 6px auto
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0)
+  }
+
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+.error-message {
+  background: linear-gradient(90deg, var(--accent), #c83b33);
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm)
+}
+
+.success-message {
+  background: linear-gradient(90deg, var(--success), #1f8b4c);
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm)
+}
+
+.hidden {
+  display: none !important
+}
+
+.visible {
+  display: block !important
+}
+
+.upload-btn {
+  background: linear-gradient(90deg, var(--primary), #2874ff);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600
+}
+
+.check-btn {
+  background: #95a5a6;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-left: 8px
+}

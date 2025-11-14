@@ -1,0 +1,26 @@
+@media (max-width:900px) {
+  .img-carousel {
+    height: 300px
+  }
+
+  .artist-presentation {
+    flex-direction: column;
+    text-align: center
+  }
+}
+
+@media (max-width:600px) {
+  .Main-button {
+    font-size: 16px;
+    padding: 12px
+  }
+
+  .carousel-cards {
+    grid-template-columns: 1fr
+  }
+
+  .img-artist {
+    width: 120px;
+    height: 120px
+  }
+}

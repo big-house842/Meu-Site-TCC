@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós - DDAP</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <style>
+        .about-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .about-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .about-section h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .about-section p {
+            line-height: 1.6;
+            color: #4a5568;
+        }
+        
+        .section-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+
+    <main class="container main-content">
+        <button class="section-button">
+            <span>Sobre o Projeto</span>
+        </button>
+
+        <section class="section-content">
+            <div class="about-sections">
+                <!-- Seção 1: O Projeto -->
+                <div class="about-section">
+                    <span class="section-icon">🚀</span>
+                    <h3>O Projeto</h3>
+                    <p>O Dicionário das Artistas Paranaenses é uma iniciativa dedicada a mapear, documentar e celebrar a trajetória das mulheres que contribuíram para as artes no estado do Paraná.</p>
+                    <p>Nosso objetivo é criar um acervo digital abrangente que preserve a memória e o legado dessas artistas, muitas das quais não receberam o devido reconhecimento em sua época.</p>
+                </div>
+
+                <!-- Seção 2: Metodologia -->
+                <div class="about-section">
+                    <span class="section-icon">🔍</span>
+                    <h3>Metodologia</h3>
+                    <p>Utilizamos pesquisa documental, entrevistas e análise de acervos para construir perfis completos das artistas.</p>
+                    <p>Cada verbete passa por rigorosa verificação histórica e conta com a colaboração de especialistas da área.</p>
+                    <p>O projeto segue princípios de curadoria digital e preservação patrimonial.</p>
+                </div>
+
+                <!-- Seção 3: Equipe -->
+                <div class="about-section">
+                    <span class="section-icon">👥</span>
+                    <h3>Nossa Equipe</h3>
+                    <p><strong>Coordenador:</strong> Dr. Maurício Marcelino de Lima</p>
+                    <p><strong>Desenvolvedor e Pesquisador:</strong> Gabriel Casagrande Dalmolin</p>
+                    <p><strong>Instituição:</strong> Instituto Federal do Paraná - Campus Cascavel</p>
+                    <p>Contamos também com a colaboração de pesquisadores voluntários e instituições parceiras.</p>
+                </div>
+            </div>
+
+            <!-- Informações Adicionais -->
+            <div class="additional-info" style="margin-top: 3rem; padding: 2rem; background: #f8fafc; border-radius: 12px;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Informações Adicionais</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div>
+                        <h4 style="color: #4a5568; margin-bottom: 0.5rem;">📧 Contato</h4>
+                        <p>Gabrielcasagrande681@gmail.com</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #4a5568; margin-bottom: 0.5rem;">🏫 Instituição</h4>
+                        <p>IFPR - Campus Cascavel</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #4a5568; margin-bottom: 0.5rem;">🎯 Objetivo</h4>
+                        <p>Preservar e divulgar a produção artística feminina paranaense</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="js/components.js"></script>
+</body>
+</html>

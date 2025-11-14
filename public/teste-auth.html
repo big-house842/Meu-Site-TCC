@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Auth</title>
+    <script src="js/api.js"></script>
+    <script>
+        async function testLogin() {
+            try {
+                console.log('🧪 Testando login...');
+                const result = await api.post('/login', {
+                    email: 'teste@email.com',
+                    senha: '123456'
+                });
+                console.log('✅ Login teste funcionou:', result);
+            } catch (error) {
+                console.error('❌ Login teste falhou:', error);
+            }
+        }
+        
+        async function testRegister() {
+            try {
+                console.log('🧪 Testando registro...');
+                const result = await api.post('/register', {
+                    nome: 'Usuario Teste',
+                    email: 'teste' + Date.now() + '@email.com',
+                    senha: '123456'
+                });
+                console.log('✅ Registro teste funcionou:', result);
+            } catch (error) {
+                console.error('❌ Registro teste falhou:', error);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('testLogin').addEventListener('click', testLogin);
+            document.getElementById('testRegister').addEventListener('click', testRegister);
+        });
+    </script>
+</head>
+<body>
+    <h1>Teste de Autenticação</h1>
+    <button id="testLogin">Testar Login</button>
+    <button id="testRegister">Testar Registro</button>
+    <div id="result"></div>
+</body>
+</html>

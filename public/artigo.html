@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Artigo</title>
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <main class="container">
+      <section class="artist-presentation" id="articlePresentation">
+        <!-- preenchido por JS -->
+      </section>
+
+      <section class="text-article" id="articleContent"></section>
+
+      <section class="written-by" id="articleAuthor"></section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+      async function loadArticle() {
+        const qs = new URLSearchParams(location.search);
+        const id = qs.get("id");
+        if (!id) return;
+        try {
+          const art = await api.get("/artigos/" + id);
+          document.getElementById(
+            "articlePresentation"
+          ).innerHTML = `<img src="${
+            art.imageUrl || "imagens/placeholder.jpg"
+          }" style="width:150px;height:150px;border-radius:50%;object-fit:cover"><div><p class="name-text">${
+            art.titulo
+          }</p><p class="date-text">${art.autor || ""}</p></div>`;
+          document.getElementById(
+            "articleContent"
+          ).innerHTML = `<p>${art.conteudo}</p>`;
+          document.getElementById(
+            "articleAuthor"
+          ).innerHTML = `<img src="imagens/author1.jpg" style="width:80px;height:80px;border-radius:50%;object-fit:cover"><div><p class="author-name-text">${art.autor}</p></div>`;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", loadArticle);
+    </script>
+
+  </body>
+</html>

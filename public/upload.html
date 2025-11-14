@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload - DDAP</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<section class="upload-section">
+    <h1>Adicionar novo conteúdo</h1>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="tipo">Tipo de item</label>
+        <select id="tipo" name="tipo" required>
+            <option value="artista">Artista</option>
+            <option value="artigo">Artigo</option>
+        </select>
+
+        <label for="nome">Nome / Título</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" required></textarea>
+
+        <label for="imagem">Imagem</label>
+        <input type="file" id="imagem" name="imagem" accept="image/*" required>
+
+        <img id="preview" class="preview-img" style="display:none;">
+
+        <button type="submit" class="btn-primary">Enviar</button>
+    </form>
+
+    <div id="uploadMessage"></div>
+</section>
+
+<div id="footer"></div>
+
+<script src="js/components.js"></script>
+<script src="js/upload.js"></script>
+
+</body>
+</html>
