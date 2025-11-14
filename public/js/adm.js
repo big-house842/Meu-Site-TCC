@@ -1,10 +1,14 @@
-// adm.js - Lógica para a página de administração
-
 class InfoSystem {
+    static initialized = false;
+
     static init() {
+        if (this.initialized) return;
+        
+        console.log('🔄 Inicializando sistema de informações...');
         this.createInfoModal();
         this.setupInfoButtons();
         this.initKeyboardEvents();
+        this.initialized = true;
         console.log('✅ Sistema de informações inicializado');
     }
 
@@ -34,34 +38,77 @@ class InfoSystem {
     }
 
     static setupInfoButtons() {
+        console.log('🔧 Configurando botões de informação...');
+        
+        // Usar delegação de eventos para capturar cliques dinamicamente
         document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('info-btn') || e.target.closest('.info-btn')) {
-                const button = e.target.classList.contains('info-btn') ? e.target : e.target.closest('.info-btn');
+            const button = e.target.closest('.info-btn');
+            if (button) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const infoType = button.getAttribute('data-info');
-                this.showInfo(infoType);
+                console.log('📝 Botão clicado:', infoType);
+                
+                if (infoType) {
+                    this.showInfo(infoType);
+                }
             }
+        });
+
+        // Também configurar eventos diretamente nos botões existentes
+        const infoButtons = document.querySelectorAll('.info-btn');
+        console.log(`🔍 Encontrados ${infoButtons.length} botões de informação`);
+        
+        infoButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const infoType = button.getAttribute('data-info');
+                console.log('📝 Botão direto clicado:', infoType);
+                
+                if (infoType) {
+                    this.showInfo(infoType);
+                }
+            });
         });
     }
 
     static showInfo(infoType) {
+        console.log('📖 Mostrando informação:', infoType);
+        
         const content = this.getInfoContent(infoType);
-        if (!content) return;
+        if (!content) {
+            console.error('❌ Conteúdo não encontrado para:', infoType);
+            return;
+        }
 
         const modal = document.getElementById('infoModal');
         const title = document.getElementById('infoModalTitle');
         const contentEl = document.getElementById('infoModalContent');
+
+        if (!modal || !title || !contentEl) {
+            console.error('❌ Elementos do modal não encontrados');
+            return;
+        }
 
         title.textContent = content.title;
         contentEl.innerHTML = content.html;
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        
+        console.log('✅ Modal aberto com sucesso');
     }
 
     static close() {
         const modal = document.getElementById('infoModal');
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            console.log('📪 Modal fechado');
+        }
     }
 
     static initKeyboardEvents() {
@@ -80,6 +127,8 @@ class InfoSystem {
 
     static handleTabFocus(e) {
         const modal = document.getElementById('infoModal');
+        if (!modal) return;
+        
         const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
@@ -257,7 +306,7 @@ class InfoSystem {
                 `
             },
             'verbete': {
-                title: 'Arquivo do Verbele',
+                title: 'Arquivo do Verbete',
                 html: `
                     <div class="info-section">
                         <h4>📄 Formato exigido</h4>
@@ -370,383 +419,51 @@ class InfoSystem {
 // Variáveis globais
 let autorCount = 1;
 
-// Função de fallback para upload
-async function tryAlternativeUpload(formData) {
-    console.log('🔄 Tentando upload alternativo...');
-    
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/artigos/artigos-completos', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        });
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Erro ${response.status}: ${response.statusText} - ${errorText}`);
-        }
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('❌ Upload alternativo também falhou:', error);
-        throw error;
-    }
-}
-
-// Função para remover autores
-window.removeAutor = function(button) {
-    const autorGroup = button.closest('.autor-group');
-    const autorId = parseInt(autorGroup.dataset.autorId);
-   
-    // Não permitir remover o primeiro autor
-    if (autorId === 1) {
-        utils.showMessage('Não é possível remover o autor principal', 'error', 3000);
-        return;
-    }
-
-    autorGroup.remove();
-    autorCount--;
-   
-    // Reorganizar os autores restantes
-    reorganizarAutores();
-    updateAddButtonVisibility();
-};
-
-function reorganizarAutores() {
-    const gruposAutores = document.querySelectorAll('.autor-group');
-    let novoCount = 1;
-   
-    gruposAutores.forEach(grupo => {
-        const numeroAutor = getAutorNumber(novoCount);
-        const header = grupo.querySelector('.autor-header');
-        const numberSpan = header.querySelector('.autor-number');
-        const titleH3 = header.querySelector('h3');
-        const labels = grupo.querySelectorAll('label');
-       
-        // Atualizar número e título
-        numberSpan.textContent = numeroAutor;
-        titleH3.textContent = `Autor ${novoCount}`;
-       
-        // Atualizar labels
-        if (labels[0]) {
-            labels[0].textContent = `Nome autor ${novoCount}:`;
-        }
-        if (labels[1]) {
-            labels[1].textContent = novoCount === 1 ?
-                'Imagem do autor principal:' :
-                `Imagem do coautor ${novoCount - 1}:`;
-        }
-       
-        // Atualizar data attribute
-        grupo.dataset.autorId = novoCount;
-       
-        // Atualizar botão de remover (só mostrar a partir do segundo)
-        const removeBtn = header.querySelector('.btn-remove-autor');
-        if (removeBtn) {
-            removeBtn.style.display = novoCount > 1 ? 'inline-block' : 'none';
-        }
-       
-        novoCount++;
-    });
-   
-    // Atualizar contador global
-    autorCount = novoCount - 1;
-}
-
-function getAutorNumber(numero) {
-    switch(numero) {
-        case 1: return '❶';
-        case 2: return '❷';
-        case 3: return '❸';
-        default: return '❶';
-    }
-}
-
-function updateAddButtonVisibility() {
-    const btnAdicionarAutor = document.getElementById('adicionar-autor');
-    if (btnAdicionarAutor) {
-        btnAdicionarAutor.style.display = autorCount >= 3 ? 'none' : 'block';
-    }
-}
-
 // Inicialização quando o DOM carregar
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Carregado - Inicializando página ADM');
+    
+    // Inicializar sistema de informações
+    InfoSystem.init();
+    
     const form = document.getElementById('form-artigo-completo');
     const autoresContainer = document.getElementById('autores-container');
     const btnAdicionarAutor = document.getElementById('adicionar-autor');
-
-    // Inicializar sistema de informações
-    InfoSystem.init();
 
     // Configurar indicadores de arquivo
     setupFileUploadIndicators();
 
     // Adicionar autor dinamicamente
-    btnAdicionarAutor.addEventListener('click', function() {
-        if (autorCount >= 3) {
-            utils.showMessage('Máximo de 3 autores permitidos', 'error', 3000);
-            return;
-        }
-
-        autorCount++;
-        const autorDiv = document.createElement('div');
-        autorDiv.className = 'autor-group';
-        autorDiv.dataset.autorId = autorCount;
-       
-        const numeroAutor = getAutorNumber(autorCount);
-       
-        autorDiv.innerHTML = `
-            <div class="autor-header">
-                <span class="autor-number">${numeroAutor}</span>
-                <h3>Autor ${autorCount}</h3>
-                <button type="button" class="btn-remove-autor" onclick="removeAutor(this)">✕ Remover</button>
-            </div>
-            <div class="input-group">
-                <label>
-                    Nome autor ${autorCount}:
-                    <button type="button" class="info-btn" data-info="nome-autor">ℹ️</button>
-                </label>
-                <input type="text" name="autor-nome[]" required>
-            </div>
-            <div class="input-group">
-                <label>
-                    Imagem do coautor ${autorCount - 1}:
-                    <button type="button" class="info-btn" data-info="imagem-autor">ℹ️</button>
-                </label>
-                <div class="file-upload-group">
-                    <input type="file" name="autor-imagem[]" accept="image/jpeg,image/jpg,image/png" required>
-                    <span class="file-status">Anexar arquivo</span>
-                </div>
-            </div>
-        `;
-
-        autoresContainer.appendChild(autorDiv);
-        setupFileUploadForElement(autorDiv);
-       
-        // Atualizar visibilidade do botão de adicionar
-        updateAddButtonVisibility();
-    });
-
-    // Envio do formulário
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-       
-        const token = localStorage.getItem('token');
-        if (!token) {
-            utils.showMessage('Usuário não autenticado', 'error', 3000);
-            return;
-        }
-
-        // Validar arquivos
-        if (!validateFiles()) {
-            return;
-        }
-
-        try {
-            utils.showMessage('Enviando artigo...', 'success', 2000);
-           
-            // Criar FormData para envio
-            const formData = new FormData();
-           
-            // Dados básicos
-            formData.append('nomeArtista', document.getElementById('nome-artista').value);
-            formData.append('tempoVida', document.getElementById('tempo-vida').value);
-           
-            // Imagem da artista
-            const imagemArtista = document.getElementById('imagem-artista').files[0];
-            if (imagemArtista) {
-                formData.append('imagemArtista', imagemArtista);
-            }
-           
-            // Autores
-            const autoresNomes = document.querySelectorAll('input[name="autor-nome[]"]');
-            const autoresImagens = document.querySelectorAll('input[name="autor-imagem[]"]');
-           
-            autoresNomes.forEach((nomeInput, index) => {
-                if (nomeInput.value.trim()) {
-                    formData.append(`autores[${index}][nome]`, nomeInput.value);
-                    if (autoresImagens[index] && autoresImagens[index].files[0]) {
-                        formData.append(`autores[${index}][imagem]`, autoresImagens[index].files[0]);
-                    }
-                }
-            });
-           
-            // Arquivos
-            const verbeteFile = document.getElementById('verbete').files[0];
-            const premiacoesFile = document.getElementById('premiacoes').files[0];
-            
-            if (verbeteFile) formData.append('verbete', verbeteFile);
-            if (premiacoesFile) formData.append('premiacoes', premiacoesFile);
-           
-            // Imagens múltiplas
-            const imagensFiles = document.getElementById('imagens').files;
-            for (let i = 0; i < imagensFiles.length; i++) {
-                formData.append('imagens', imagensFiles[i]);
+    if (btnAdicionarAutor) {
+        btnAdicionarAutor.addEventListener('click', function() {
+            if (autorCount >= 3) {
+                utils.showMessage('Máximo de 3 autores permitidos', 'error', 3000);
+                return;
             }
 
-            console.log('📤 Enviando formulário com dados:', {
-                nomeArtista: document.getElementById('nome-artista').value,
-                tempoVida: document.getElementById('tempo-vida').value,
-                autores: Array.from(autoresNomes).map(a => a.value),
-                arquivos: {
-                    imagemArtista: imagemArtista?.name,
-                    verbete: verbeteFile?.name,
-                    premiacoes: premiacoesFile?.name,
-                    imagens: Array.from(imagensFiles).map(f => f.name)
-                }
-            });
-
-            // Enviar para a API - com fallback
-            let response;
-            try {
-                // Primeira tentativa com a API helper
-                response = await api.post('/artigos/artigos-completos', formData);
-            } catch (firstError) {
-                console.log('🔄 Primeira tentativa falhou, usando fallback...', firstError);
-                // Segunda tentativa com fetch direto
-                response = await tryAlternativeUpload(formData);
-            }
+            autorCount++;
+            const autorDiv = document.createElement('div');
+            autorDiv.className = 'autor-group';
+            autorDiv.dataset.autorId = autorCount;
            
-            if (response && response.id) {
-                utils.showMessage('Artigo publicado com sucesso!', 'success', 3000);
-                form.reset();
-                resetFileIndicators();
-                resetAutores();
-                
-                // Redirecionar para o artigo após 2 segundos
-                setTimeout(() => {
-                    window.location.href = `artigo.html?id=${response.id}`;
-                }, 2000);
-            } else {
-                throw new Error('Resposta inválida do servidor');
-            }
+            const numeroAutor = getAutorNumber(autorCount);
            
-        } catch (error) {
-            console.error('Erro ao publicar artigo:', error);
-            
-            // Mensagem de erro mais específica
-            let errorMessage = 'Erro ao publicar artigo';
-            if (error.message.includes('404')) {
-                errorMessage = 'Serviço temporariamente indisponível. Verifique se o servidor está rodando.';
-            } else if (error.message.includes('413')) {
-                errorMessage = 'Arquivos muito grandes. Reduza o tamanho e tente novamente.';
-            } else if (error.message.includes('500')) {
-                errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
-            } else if (error.message.includes('Network Error')) {
-                errorMessage = 'Erro de conexão. Verifique sua internet e se o servidor está rodando.';
-            } else {
-                errorMessage = error.message || 'Erro ao publicar artigo';
-            }
-            
-            utils.showMessage(errorMessage, 'error', 5000);
-        }
-    });
-
-    // Inicializar
-    updateAddButtonVisibility();
-});
-
-// Funções auxiliares
-function setupFileUploadIndicators() {
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', function() {
-            const statusElement = this.parentElement.querySelector('.file-status');
-            if (this.files.length > 0) {
-                if (this.multiple) {
-                    statusElement.textContent = `✔ ${this.files.length} arquivo(s) selecionado(s)`;
-                } else {
-                    statusElement.textContent = '✔ ' + this.files[0].name;
-                }
-                statusElement.style.color = '#27ae60';
-                statusElement.style.fontWeight = '600';
-            } else {
-                statusElement.textContent = 'Anexar arquivo';
-                statusElement.style.color = '';
-                statusElement.style.fontWeight = '';
-            }
-        });
-    });
-}
-
-function setupFileUploadForElement(element) {
-    element.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', function() {
-            const statusElement = this.parentElement.querySelector('.file-status');
-            if (this.files.length > 0) {
-                statusElement.textContent = '✔ ' + this.files[0].name;
-                statusElement.style.color = '#27ae60';
-                statusElement.style.fontWeight = '600';
-            }
-        });
-    });
-}
-
-function validateFiles() {
-    const requiredFiles = [
-        { element: 'imagem-artista', type: 'Imagem da artista' },
-        { element: 'verbete', type: 'Verbele PDF' },
-        { element: 'premiacoes', type: 'Premiações PDF' },
-        { element: 'imagens', type: 'Imagens do artigo' }
-    ];
-
-    for (let file of requiredFiles) {
-        const element = document.getElementById(file.element);
-        if (element.files.length === 0) {
-            utils.showMessage(`${file.type} é obrigatório`, 'error', 3000);
-            return false;
-        }
-    }
-
-    // Verificar autores
-    const autoresNomes = document.querySelectorAll('input[name="autor-nome[]"]');
-    const autoresImagens = document.querySelectorAll('input[name="autor-imagem[]"]');
-   
-    for (let i = 0; i < autoresNomes.length; i++) {
-        if (!autoresNomes[i].value.trim()) {
-            utils.showMessage(`Nome do autor ${i + 1} é obrigatório`, 'error', 3000);
-            return false;
-        }
-        if (autoresImagens[i].files.length === 0) {
-            utils.showMessage(`Imagem do autor ${i + 1} é obrigatória`, 'error', 3000);
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function resetFileIndicators() {
-    document.querySelectorAll('.file-status').forEach(status => {
-        status.textContent = 'Anexar arquivo';
-        status.style.color = '';
-        status.style.fontWeight = '';
-    });
-}
-
-function resetAutores() {
-    autorCount = 1;
-    const autoresContainer = document.getElementById('autores-container');
-    if (autoresContainer) {
-        autoresContainer.innerHTML = `
-            <div class="autor-group" data-autor-id="1">
+            autorDiv.innerHTML = `
                 <div class="autor-header">
-                    <span class="autor-number">❶</span>
-                    <h3>Autor 1</h3>
+                    <span class="autor-number">${numeroAutor}</span>
+                    <h3>Autor ${autorCount}</h3>
+                    <button type="button" class="btn-remove-autor" onclick="removeAutor(this)">✕ Remover</button>
                 </div>
                 <div class="input-group">
                     <label>
-                        Nome autor 1:
+                        Nome autor ${autorCount}:
                         <button type="button" class="info-btn" data-info="nome-autor">ℹ️</button>
                     </label>
                     <input type="text" name="autor-nome[]" required>
                 </div>
                 <div class="input-group">
                     <label>
-                        Imagem do autor principal:
+                        Imagem do coautor ${autorCount - 1}:
                         <button type="button" class="info-btn" data-info="imagem-autor">ℹ️</button>
                     </label>
                     <div class="file-upload-group">
@@ -754,9 +471,135 @@ function resetAutores() {
                         <span class="file-status">Anexar arquivo</span>
                     </div>
                 </div>
-            </div>
-        `;
-        setupFileUploadIndicators();
-        updateAddButtonVisibility();
+            `;
+
+            autoresContainer.appendChild(autorDiv);
+            setupFileUploadForElement(autorDiv);
+           
+            // Re-inicializar sistema de informações para os novos botões
+            InfoSystem.setupInfoButtons();
+           
+            // Atualizar visibilidade do botão de adicionar
+            updateAddButtonVisibility();
+        });
     }
-}
+
+    // Envio do formulário
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+           
+            const token = localStorage.getItem('token');
+            if (!token) {
+                utils.showMessage('Usuário não autenticado', 'error', 3000);
+                return;
+            }
+
+            // Validar arquivos
+            if (!validateFiles()) {
+                return;
+            }
+
+            try {
+                utils.showMessage('Enviando artigo...', 'success', 2000);
+               
+                // Criar FormData para envio
+                const formData = new FormData();
+               
+                // Dados básicos
+                formData.append('nomeArtista', document.getElementById('nome-artista').value);
+                formData.append('tempoVida', document.getElementById('tempo-vida').value);
+               
+                // Imagem da artista
+                const imagemArtista = document.getElementById('imagem-artista').files[0];
+                if (imagemArtista) {
+                    formData.append('imagemArtista', imagemArtista);
+                }
+               
+                // Autores
+                const autoresNomes = document.querySelectorAll('input[name="autor-nome[]"]');
+                const autoresImagens = document.querySelectorAll('input[name="autor-imagem[]"]');
+               
+                autoresNomes.forEach((nomeInput, index) => {
+                    if (nomeInput.value.trim()) {
+                        formData.append(`autores[${index}][nome]`, nomeInput.value);
+                        if (autoresImagens[index] && autoresImagens[index].files[0]) {
+                            formData.append(`autores[${index}][imagem]`, autoresImagens[index].files[0]);
+                        }
+                    }
+                });
+               
+                // Arquivos
+                const verbeteFile = document.getElementById('verbete').files[0];
+                const premiacoesFile = document.getElementById('premiacoes').files[0];
+               
+                if (verbeteFile) formData.append('verbete', verbeteFile);
+                if (premiacoesFile) formData.append('premiacoes', premiacoesFile);
+               
+                // Imagens múltiplas
+                const imagensFiles = document.getElementById('imagens').files;
+                for (let i = 0; i < imagensFiles.length; i++) {
+                    formData.append('imagens', imagensFiles[i]);
+                }
+
+                console.log('📤 Enviando formulário com dados:', {
+                    nomeArtista: document.getElementById('nome-artista').value,
+                    tempoVida: document.getElementById('tempo-vida').value,
+                    autores: Array.from(autoresNomes).map(a => a.value),
+                    arquivos: {
+                        imagemArtista: imagemArtista?.name,
+                        verbete: verbeteFile?.name,
+                        premiacoes: premiacoesFile?.name,
+                        imagens: Array.from(imagensFiles).map(f => f.name)
+                    }
+                });
+
+                // Enviar para a API
+                let response;
+                try {
+                    response = await api.post('/artigos/artigos-completos', formData);
+                } catch (firstError) {
+                    console.log('🔄 Primeira tentativa falhou, usando fallback...', firstError);
+                    response = await tryAlternativeUpload(formData);
+                }
+               
+                if (response && response.id) {
+                    utils.showMessage('Artigo publicado com sucesso!', 'success', 3000);
+                    form.reset();
+                    resetFileIndicators();
+                    resetAutores();
+                   
+                    // Redirecionar para o artigo após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = `artigo.html?id=${response.id}`;
+                    }, 2000);
+                } else {
+                    throw new Error('Resposta inválida do servidor');
+                }
+               
+            } catch (error) {
+                console.error('Erro ao publicar artigo:', error);
+               
+                let errorMessage = 'Erro ao publicar artigo';
+                if (error.message.includes('404')) {
+                    errorMessage = 'Serviço temporariamente indisponível. Verifique se o servidor está rodando.';
+                } else if (error.message.includes('413')) {
+                    errorMessage = 'Arquivos muito grandes. Reduza o tamanho e tente novamente.';
+                } else if (error.message.includes('500')) {
+                    errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
+                } else if (error.message.includes('Network Error')) {
+                    errorMessage = 'Erro de conexão. Verifique sua internet e se o servidor está rodando.';
+                } else {
+                    errorMessage = error.message || 'Erro ao publicar artigo';
+                }
+               
+                utils.showMessage(errorMessage, 'error', 5000);
+            }
+        });
+    }
+
+    // Inicializar
+    updateAddButtonVisibility();
+});
+
+// ... (restante das funções auxiliares permanecem as mesmas)
