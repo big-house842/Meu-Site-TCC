@@ -38,13 +38,13 @@ exports.getAll = async (req, res) => {
 
 exports.createCompleto = async (req, res) => {
   try {
-    const { nomeArtista, tempoVida } = req.body;
+    const { nomeArtista, tempoVida, conteudoArtigo } = req.body;
     const files = req.files;
 
     const baseUrl = `${req.protocol}://${req.get('host')}`;
 
     // Processar imagem da artista
-    const imagemArtistaUrl = files.imagemArtista ? 
+    const imagemArtistaUrl = files.imagemArtista ?
       `${baseUrl}/uploads/artistas/${files.imagemArtista[0].filename}` : null;
 
     // Processar autores
@@ -52,34 +52,35 @@ exports.createCompleto = async (req, res) => {
     for (let i = 0; i < 3; i++) {
       const autorImagem = files[`autores[${i}][imagem]`];
       const autorNome = req.body[`autores[${i}][nome]`];
-      
+     
       if (autorNome) {
         autores.push({
           nome: autorNome,
-          imagemUrl: autorImagem ? 
+          imagemUrl: autorImagem ?
             `${baseUrl}/uploads/autores/${autorImagem[0].filename}` : null
         });
       }
     }
 
-    // Processar arquivos PDF
-    const verbeteUrl = files.verbete ? 
+    // Processar arquivos PDF - agora armazenamos apenas a URL, não o conteúdo
+    const verbeteUrl = files.verbete ?
       `${baseUrl}/uploads/verbete/${files.verbete[0].filename}` : null;
-    
-    const premiacoesUrl = files.premiacoes ? 
+   
+    const premiacoesUrl = files.premiacoes ?
       `${baseUrl}/uploads/premiacoes/${files.premiacoes[0].filename}` : null;
 
-    // Processar imagens múltiplas
-    const imagensUrls = files.imagens ? 
+    // Processar imagens múltiplas para o artigo
+    const imagensUrls = files.imagens ?
       files.imagens.map(file => `${baseUrl}/uploads/artigos_imagens/${file.filename}`) : [];
 
     const data = {
       nomeArtista,
       tempoVida,
+      conteudoArtigo: conteudoArtigo || "Artigo em desenvolvimento...",
       imagemArtistaUrl,
       autores,
-      verbeteUrl,
-      premiacoesUrl,
+      verbeteUrl, // URL do PDF, não o conteúdo extraído
+      premiacoesUrl, // URL do PDF, não o conteúdo extraído
       imagensUrls,
       createdAt: new Date().toISOString(),
       tipo: 'completo'

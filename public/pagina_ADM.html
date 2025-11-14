@@ -1,128 +1,241 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Página ADM - DDAP</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/components.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+  </head>
+  <body>
     <div id="navbar"></div>
 
     <main class="container main-content">
-        <div class="adm-container">
-            <button class="section-button">
-                <span>Dados do Artigo</span>
+      <div class="adm-container">
+        <button class="section-button">
+          <span>Dados do Artigo</span>
+        </button>
+
+        <section class="section-content">
+          <form id="form-artigo-completo" class="artigo-form">
+            <!-- Dados da Artista -->
+            <div class="input-group">
+              <label for="nome-artista">
+                Nome da artista pesquisada:
+                <button type="button" class="info-btn" data-info="nome-artista">
+                  ℹ️
+                </button>
+              </label>
+              <input
+                type="text"
+                id="nome-artista"
+                name="nome-artista"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="tempo-vida">
+                Tempo de vida (data de nascimento):
+                <button type="button" class="info-btn" data-info="tempo-vida">
+                  ℹ️
+                </button>
+              </label>
+              <input
+                type="text"
+                id="tempo-vida"
+                name="tempo-vida"
+                placeholder="Ex: 1900-1980"
+                required
+              />
+            </div>
+            
+            <div class="input-group">
+              <label for="conteudo-artigo">
+                Conteúdo do Artigo:
+                <button
+                  type="button"
+                  class="info-btn"
+                  data-info="conteudo-artigo"
+                >
+                  ℹ️
+                </button>
+              </label>
+              <textarea
+                id="conteudo-artigo"
+                name="conteudo-artigo"
+                rows="12"
+                placeholder="Escreva o conteúdo do artigo aqui. Use [IMAGEM:1], [IMAGEM:2], etc. para inserir as imagens nas posições desejadas."
+                required
+              ></textarea>
+              <small style="color: var(--muted); font-size: 0.9rem">
+                💡 Dica: Use <strong>[IMAGEM:1]</strong>,
+                <strong>[IMAGEM:2]</strong>, etc. no texto para indicar onde
+                cada imagem deve aparecer. As imagens serão inseridas na ordem
+                que você fizer o upload.
+              </small>
+            </div>
+
+            <div class="input-group">
+              <label for="imagem-artista">
+                Imagem da artista pesquisada:
+                <button
+                  type="button"
+                  class="info-btn"
+                  data-info="imagem-artista"
+                >
+                  ℹ️
+                </button>
+              </label>
+              <div class="file-upload-group">
+                <input
+                  type="file"
+                  id="imagem-artista"
+                  name="imagem-artista"
+                  accept="image/jpeg,image/jpg,image/png"
+                  required
+                />
+                <span class="file-status" id="status-imagem-artista"
+                  >Anexar arquivo</span
+                >
+              </div>
+            </div>
+
+            <!-- Autores -->
+            <div class="input-group">
+              <label>
+                Autores do Artigo
+                <button type="button" class="info-btn" data-info="autores">
+                  ℹ️
+                </button>
+              </label>
+              <div class="autores-container" id="autores-container">
+                <!-- Autor 1 -->
+                <div class="autor-group" data-autor-id="1">
+                  <div class="autor-header">
+                    <span class="autor-number">❶</span>
+                    <h3>Autor 1</h3>
+                  </div>
+                  <div class="input-group">
+                    <label>
+                      Nome autor 1:
+                      <button
+                        type="button"
+                        class="info-btn"
+                        data-info="nome-autor"
+                      >
+                        ℹ️
+                      </button>
+                    </label>
+                    <input type="text" name="autor-nome[]" required />
+                  </div>
+                  <div class="input-group">
+                    <label>
+                      Imagem do autor principal:
+                      <button
+                        type="button"
+                        class="info-btn"
+                        data-info="imagem-autor"
+                      >
+                        ℹ️
+                      </button>
+                    </label>
+                    <div class="file-upload-group">
+                      <input
+                        type="file"
+                        name="autor-imagem[]"
+                        accept="image/jpeg,image/jpg,image/png"
+                        required
+                      />
+                      <span class="file-status">Anexar arquivo</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" id="adicionar-autor" class="btn-add-autor">
+                + Adicionar Autor
+              </button>
+            </div>
+
+            <!-- Arquivos -->
+            <div class="arquivos-section">
+              <h2>Arquivos:</h2>
+
+              <div class="arquivo-group">
+                <label>
+                  Verbete
+                  <button type="button" class="info-btn" data-info="verbete">
+                    ℹ️
+                  </button>
+                </label>
+                <div class="file-upload-group">
+                  <input
+                    type="file"
+                    id="verbete"
+                    name="verbete"
+                    accept=".pdf"
+                    required
+                  />
+                  <span class="file-status" id="status-verbete"
+                    >Anexar arquivo</span
+                  >
+                </div>
+              </div>
+
+              <div class="arquivo-group">
+                <label>
+                  Imagens do Artigo
+                  <button
+                    type="button"
+                    class="info-btn"
+                    data-info="imagens-artigo"
+                  >
+                    ℹ️
+                  </button>
+                </label>
+                <div class="file-upload-group">
+                  <input
+                    type="file"
+                    id="imagens"
+                    name="imagens"
+                    accept="image/jpeg,image/jpg,image/png"
+                    multiple
+                    required
+                  />
+                  <span class="file-status" id="status-imagens"
+                    >Anexar arquivo</span
+                  >
+                </div>
+              </div>
+
+              <div class="arquivo-group">
+                <label>
+                  Premiações e feitos
+                  <button type="button" class="info-btn" data-info="premiacoes">
+                    ℹ️
+                  </button>
+                </label>
+                <div class="file-upload-group">
+                  <input
+                    type="file"
+                    id="premiacoes"
+                    name="premiacoes"
+                    accept=".pdf"
+                    required
+                  />
+                  <span class="file-status" id="status-premiacoes"
+                    >Anexar arquivo</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              Publicar Artigo Completo
             </button>
-
-            <section class="section-content">
-                <form id="form-artigo-completo" class="artigo-form">
-                    <!-- Dados da Artista -->
-                    <div class="input-group">
-                        <label for="nome-artista">
-                            Nome da artista pesquisada:
-                            <button type="button" class="info-btn" data-info="nome-artista">ℹ️</button>
-                        </label>
-                        <input type="text" id="nome-artista" name="nome-artista" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="tempo-vida">
-                            Tempo de vida (data de nascimento):
-                            <button type="button" class="info-btn" data-info="tempo-vida">ℹ️</button>
-                        </label>
-                        <input type="text" id="tempo-vida" name="tempo-vida" placeholder="Ex: 1900-1980" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="imagem-artista">
-                            Imagem da artista pesquisada:
-                            <button type="button" class="info-btn" data-info="imagem-artista">ℹ️</button>
-                        </label>
-                        <div class="file-upload-group">
-                            <input type="file" id="imagem-artista" name="imagem-artista" accept="image/jpeg,image/jpg,image/png" required>
-                            <span class="file-status" id="status-imagem-artista">Anexar arquivo</span>
-                        </div>
-                    </div>
-
-                    <!-- Autores -->
-                    <div class="input-group">
-                        <label>
-                            Autores do Artigo
-                            <button type="button" class="info-btn" data-info="autores">ℹ️</button>
-                        </label>
-                        <div class="autores-container" id="autores-container">
-                            <!-- Autor 1 -->
-                            <div class="autor-group" data-autor-id="1">
-                                <div class="autor-header">
-                                    <span class="autor-number">❶</span>
-                                    <h3>Autor 1</h3>
-                                </div>
-                                <div class="input-group">
-                                    <label>
-                                        Nome autor 1:
-                                        <button type="button" class="info-btn" data-info="nome-autor">ℹ️</button>
-                                    </label>
-                                    <input type="text" name="autor-nome[]" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>
-                                        Imagem do autor principal:
-                                        <button type="button" class="info-btn" data-info="imagem-autor">ℹ️</button>
-                                    </label>
-                                    <div class="file-upload-group">
-                                        <input type="file" name="autor-imagem[]" accept="image/jpeg,image/jpg,image/png" required>
-                                        <span class="file-status">Anexar arquivo</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" id="adicionar-autor" class="btn-add-autor">+ Adicionar Autor</button>
-                    </div>
-
-                    <!-- Arquivos -->
-                    <div class="arquivos-section">
-                        <h2>Arquivos:</h2>
-                       
-                        <div class="arquivo-group">
-                            <label>
-                                Verbete
-                                <button type="button" class="info-btn" data-info="verbete">ℹ️</button>
-                            </label>
-                            <div class="file-upload-group">
-                                <input type="file" id="verbete" name="verbete" accept=".pdf" required>
-                                <span class="file-status" id="status-verbete">Anexar arquivo</span>
-                            </div>
-                        </div>
-
-                        <div class="arquivo-group">
-                            <label>
-                                Imagens do Artigo
-                                <button type="button" class="info-btn" data-info="imagens-artigo">ℹ️</button>
-                            </label>
-                            <div class="file-upload-group">
-                                <input type="file" id="imagens" name="imagens" accept="image/jpeg,image/jpg,image/png" multiple required>
-                                <span class="file-status" id="status-imagens">Anexar arquivo</span>
-                            </div>
-                        </div>
-
-                        <div class="arquivo-group">
-                            <label>
-                                Premiações e feitos
-                                <button type="button" class="info-btn" data-info="premiacoes">ℹ️</button>
-                            </label>
-                            <div class="file-upload-group">
-                                <input type="file" id="premiacoes" name="premiacoes" accept=".pdf" required>
-                                <span class="file-status" id="status-premiacoes">Anexar arquivo</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Publicar Artigo Completo</button>
-                </form>
-            </section>
-        </div>
+          </form>
+        </section>
+      </div>
     </main>
 
     <div id="footer"></div>
@@ -131,5 +244,5 @@
     <script src="js/utils.js"></script>
     <script src="js/components.js"></script>
     <script src="js/adm.js"></script>
-</body>
+  </body>
 </html>

@@ -1722,3 +1722,56 @@ body > footer:not(:first-of-type) {
     font-weight: 600;
     margin: 0.2rem;
 }
+
+/* ===== ESTILOS PARA O EDITOR DE CONTEÚDO ===== */
+.input-group textarea {
+    width: 100%;
+    padding: 1.2rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 200px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(33, 87, 196, 0.1);
+}
+
+.input-group small {
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* ===== ESTADOS DO BOTÃO DE ENVIO ===== */
+.btn-submit:disabled {
+    background: #cbd5e0 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-submit:disabled:hover {
+    background: #cbd5e0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Destaque para campos com erro */
+.input-group input:invalid,
+.input-group textarea:invalid,
+.file-upload-group input:invalid {
+    border-color: var(--accent) !important;
+}
+
+.input-group input:focus:invalid,
+.input-group textarea:focus:invalid,
+.file-upload-group input:focus:invalid {
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1) !important;
+}

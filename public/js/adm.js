@@ -1,28 +1,28 @@
 class InfoSystem {
-    static initialized = false;
+  static initialized = false;
 
-    static init() {
-        if (this.initialized) return;
-        
-        console.log('🔄 Inicializando sistema de informações...');
-        this.createInfoModal();
-        this.setupInfoButtons();
-        this.initKeyboardEvents();
-        this.initialized = true;
-        console.log('✅ Sistema de informações inicializado');
+  static init() {
+    if (this.initialized) return;
+
+    console.log("🔄 Inicializando sistema de informações...");
+    this.createInfoModal();
+    this.setupInfoButtons();
+    this.initKeyboardEvents();
+    this.initialized = true;
+    console.log("✅ Sistema de informações inicializado");
+  }
+
+  static createInfoModal() {
+    // Remove modal existente se houver
+    const existingModal = document.getElementById("infoModal");
+    if (existingModal) {
+      existingModal.remove();
     }
 
-    static createInfoModal() {
-        // Remove modal existente se houver
-        const existingModal = document.getElementById('infoModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-
-        const modal = document.createElement('div');
-        modal.className = 'info-modal';
-        modal.id = 'infoModal';
-        modal.innerHTML = `
+    const modal = document.createElement("div");
+    modal.className = "info-modal";
+    modal.id = "infoModal";
+    modal.innerHTML = `
             <div class="info-modal-overlay" onclick="InfoSystem.close()"></div>
             <div class="info-modal-container">
                 <div class="info-modal-header">
@@ -34,123 +34,125 @@ class InfoSystem {
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
-    }
+    document.body.appendChild(modal);
+  }
 
-    static setupInfoButtons() {
-        console.log('🔧 Configurando botões de informação...');
-        
-        // Usar delegação de eventos para capturar cliques dinamicamente
-        document.addEventListener('click', (e) => {
-            const button = e.target.closest('.info-btn');
-            if (button) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const infoType = button.getAttribute('data-info');
-                console.log('📝 Botão clicado:', infoType);
-                
-                if (infoType) {
-                    this.showInfo(infoType);
-                }
-            }
-        });
+  static setupInfoButtons() {
+    console.log("🔧 Configurando botões de informação...");
 
-        // Também configurar eventos diretamente nos botões existentes
-        const infoButtons = document.querySelectorAll('.info-btn');
-        console.log(`🔍 Encontrados ${infoButtons.length} botões de informação`);
-        
-        infoButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const infoType = button.getAttribute('data-info');
-                console.log('📝 Botão direto clicado:', infoType);
-                
-                if (infoType) {
-                    this.showInfo(infoType);
-                }
-            });
-        });
-    }
+    // Usar delegação de eventos para capturar cliques dinamicamente
+    document.addEventListener("click", (e) => {
+      const button = e.target.closest(".info-btn");
+      if (button) {
+        e.preventDefault();
+        e.stopPropagation();
 
-    static showInfo(infoType) {
-        console.log('📖 Mostrando informação:', infoType);
-        
-        const content = this.getInfoContent(infoType);
-        if (!content) {
-            console.error('❌ Conteúdo não encontrado para:', infoType);
-            return;
+        const infoType = button.getAttribute("data-info");
+        console.log("📝 Botão clicado:", infoType);
+
+        if (infoType) {
+          this.showInfo(infoType);
         }
+      }
+    });
 
-        const modal = document.getElementById('infoModal');
-        const title = document.getElementById('infoModalTitle');
-        const contentEl = document.getElementById('infoModalContent');
+    // Também configurar eventos diretamente nos botões existentes
+    const infoButtons = document.querySelectorAll(".info-btn");
+    console.log(`🔍 Encontrados ${infoButtons.length} botões de informação`);
 
-        if (!modal || !title || !contentEl) {
-            console.error('❌ Elementos do modal não encontrados');
-            return;
+    infoButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const infoType = button.getAttribute("data-info");
+        console.log("📝 Botão direto clicado:", infoType);
+
+        if (infoType) {
+          this.showInfo(infoType);
         }
+      });
+    });
+  }
 
-        title.textContent = content.title;
-        contentEl.innerHTML = content.html;
+  static showInfo(infoType) {
+    console.log("📖 Mostrando informação:", infoType);
 
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-        console.log('✅ Modal aberto com sucesso');
+    const content = this.getInfoContent(infoType);
+    if (!content) {
+      console.error("❌ Conteúdo não encontrado para:", infoType);
+      return;
     }
 
-    static close() {
-        const modal = document.getElementById('infoModal');
-        if (modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            console.log('📪 Modal fechado');
+    const modal = document.getElementById("infoModal");
+    const title = document.getElementById("infoModalTitle");
+    const contentEl = document.getElementById("infoModalContent");
+
+    if (!modal || !title || !contentEl) {
+      console.error("❌ Elementos do modal não encontrados");
+      return;
+    }
+
+    title.textContent = content.title;
+    contentEl.innerHTML = content.html;
+
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    console.log("✅ Modal aberto com sucesso");
+  }
+
+  static close() {
+    const modal = document.getElementById("infoModal");
+    if (modal) {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+      console.log("📪 Modal fechado");
+    }
+  }
+
+  static initKeyboardEvents() {
+    document.addEventListener("keydown", (e) => {
+      const modal = document.getElementById("infoModal");
+      if (modal && modal.classList.contains("active")) {
+        if (e.key === "Escape") {
+          this.close();
         }
-    }
-
-    static initKeyboardEvents() {
-        document.addEventListener('keydown', (e) => {
-            const modal = document.getElementById('infoModal');
-            if (modal && modal.classList.contains('active')) {
-                if (e.key === 'Escape') {
-                    this.close();
-                }
-                if (e.key === 'Tab') {
-                    this.handleTabFocus(e);
-                }
-            }
-        });
-    }
-
-    static handleTabFocus(e) {
-        const modal = document.getElementById('infoModal');
-        if (!modal) return;
-        
-        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (e.shiftKey) {
-            if (document.activeElement === firstElement) {
-                lastElement.focus();
-                e.preventDefault();
-            }
-        } else {
-            if (document.activeElement === lastElement) {
-                firstElement.focus();
-                e.preventDefault();
-            }
+        if (e.key === "Tab") {
+          this.handleTabFocus(e);
         }
-    }
+      }
+    });
+  }
 
-    static getInfoContent(infoType) {
-        const infoContents = {
-            'nome-artista': {
-                title: 'Nome da Artista',
-                html: `
+  static handleTabFocus(e) {
+    const modal = document.getElementById("infoModal");
+    if (!modal) return;
+
+    const focusableElements = modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === firstElement) {
+        lastElement.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === lastElement) {
+        firstElement.focus();
+        e.preventDefault();
+      }
+    }
+  }
+
+  static getInfoContent(infoType) {
+    const infoContents = {
+      "nome-artista": {
+        title: "Nome da Artista",
+        html: `
                     <div class="info-section">
                         <h4>📝 Como preencher</h4>
                         <p>Digite o nome completo da artista pesquisada, conforme registrado em fontes confiáveis.</p>
@@ -167,11 +169,40 @@ class InfoSystem {
                     <div class="info-tip">
                         <strong>Exemplo:</strong> "Ana Maria Pacheco" ou "Tarsila do Amaral"
                     </div>
-                `
-            },
-            'tempo-vida': {
-                title: 'Tempo de Vida',
-                html: `
+                `,
+      },
+      "conteudo-artigo": {
+        title: "Conteúdo do Artigo",
+        html: `
+        <div class="info-section">
+            <h4>📝 Como estruturar o conteúdo</h4>
+            <p>Escreva o conteúdo completo do artigo sobre a artista. Use parágrafos, títulos e formatação para organizar o texto.</p>
+        </div>
+        <div class="info-section">
+            <h4>🖼️ Inserindo imagens</h4>
+            <p>Para inserir imagens em posições específicas do texto, use os marcadores:</p>
+            <ul class="info-list">
+                <li><strong>[IMAGEM:1]</strong> - Insere a primeira imagem</li>
+                <li><strong>[IMAGEM:2]</strong> - Insere a segunda imagem</li>
+                <li><strong>[IMAGEM:3]</strong> - Insere a terceira imagem</li>
+            </ul>
+            <p>As imagens serão inseridas na ordem que você fizer o upload.</p>
+        </div>
+        <div class="info-section">
+            <h4>💡 Exemplo de uso</h4>
+            <div class="info-tip">
+                <strong>Texto exemplo:</strong><br><br>
+                "A artista começou sua carreira em 1950...[IMAGEM:1]<br><br>
+                Sua primeira exposição foi um sucesso...[IMAGEM:2]<br><br>
+                Nas décadas seguintes, ela desenvolveu..."
+            </div>
+        </div>
+    `,
+      },
+
+      "tempo-vida": {
+        title: "Tempo de Vida",
+        html: `
                     <div class="info-section">
                         <h4>📅 Formato recomendado</h4>
                         <p>Informe as datas de nascimento e falecimento no formato: <strong>ANO-NASCIMENTO - ANO-FALECIMENTO</strong></p>
@@ -191,11 +222,11 @@ class InfoSystem {
                         • "1950 - Presente"<br>
                         • "c. 1895 - 1960"
                     </div>
-                `
-            },
-            'imagem-artista': {
-                title: 'Imagem da Artista',
-                html: `
+                `,
+      },
+      "imagem-artista": {
+        title: "Imagem da Artista",
+        html: `
                     <div class="info-section">
                         <h4>🖼️ Formatos aceitos</h4>
                         <p>
@@ -222,11 +253,11 @@ class InfoSystem {
                             <li>Garanta que o rosto esteja bem visível</li>
                         </ul>
                     </div>
-                `
-            },
-            'autores': {
-                title: 'Sistema de Autores',
-                html: `
+                `,
+      },
+      autores: {
+        title: "Sistema de Autores",
+        html: `
                     <div class="info-section">
                         <h4>👥 Como funciona</h4>
                         <p>Adicione todos os pesquisadores e colaboradores que participaram da criação deste artigo.</p>
@@ -248,11 +279,11 @@ class InfoSystem {
                             <li>É possível remover autores adicionados</li>
                         </ul>
                     </div>
-                `
-            },
-            'nome-autor': {
-                title: 'Nome do Autor',
-                html: `
+                `,
+      },
+      "nome-autor": {
+        title: "Nome do Autor",
+        html: `
                     <div class="info-section">
                         <h4>📝 Formato correto</h4>
                         <p>Digite o nome completo do autor no formato padrão acadêmico.</p>
@@ -272,11 +303,11 @@ class InfoSystem {
                         • "Dr. João Pereira Lima"<br>
                         • "Prof. Ana Costa Oliveira"
                     </div>
-                `
-            },
-            'imagem-autor': {
-                title: 'Imagem do Autor',
-                html: `
+                `,
+      },
+      "imagem-autor": {
+        title: "Imagem do Autor",
+        html: `
                     <div class="info-section">
                         <h4>🖼️ Formatos aceitos</h4>
                         <p>
@@ -303,11 +334,11 @@ class InfoSystem {
                             <li>Expressão profissional</li>
                         </ul>
                     </div>
-                `
-            },
-            'verbete': {
-                title: 'Arquivo do Verbete',
-                html: `
+                `,
+      },
+      verbete: {
+        title: "Arquivo do Verbete",
+        html: `
                     <div class="info-section">
                         <h4>📄 Formato exigido</h4>
                         <p>
@@ -336,11 +367,11 @@ class InfoSystem {
                     <div class="info-tip">
                         <strong>Dica:</strong> Use formatação clara, títulos e subtítulos para melhor organização do conteúdo.
                     </div>
-                `
-            },
-            'imagens-artigo': {
-                title: 'Imagens do Artigo',
-                html: `
+                `,
+      },
+      "imagens-artigo": {
+        title: "Imagens do Artigo",
+        html: `
                     <div class="info-section">
                         <h4>🖼️ Formatos aceitos</h4>
                         <p>
@@ -371,11 +402,11 @@ class InfoSystem {
                     <div class="info-tip">
                         <strong>Como selecionar múltiplas imagens:</strong> Mantenha a tecla CTRL (Windows) ou CMD (Mac) pressionada enquanto clica nas imagens desejadas.
                     </div>
-                `
-            },
-            'premiacoes': {
-                title: 'Premiações e Feitos',
-                html: `
+                `,
+      },
+      premiacoes: {
+        title: "Premiações e Feitos",
+        html: `
                     <div class="info-section">
                         <h4>📄 Formato exigido</h4>
                         <p>
@@ -405,50 +436,311 @@ class InfoSystem {
                     <div class="info-tip">
                         <strong>Formatação sugerida:</strong> Use tabelas ou listas numeradas para melhor organização das informações cronológicas.
                     </div>
-                `
-            }
-        };
+                `,
+      },
+    };
 
-        return infoContents[infoType] || {
-            title: 'Informações',
-            html: '<p>Informações não disponíveis para este campo.</p>'
-        };
+    return (
+      infoContents[infoType] || {
+        title: "Informações",
+        html: "<p>Informações não disponíveis para este campo.</p>",
+      }
+    );
+  }
+}
+
+// Função de fallback para upload - CORRIGIDA
+async function tryAlternativeUpload(formData) {
+  console.log("🔄 Tentando upload alternativo...");
+
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token não encontrado");
     }
+
+    const response = await fetch(
+      "http://localhost:3000/api/artigos/artigos-completos",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Não definir Content-Type para FormData - o browser faz automaticamente
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Erro na resposta:", errorText);
+      throw new Error(`Erro ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ Upload alternativo bem-sucedido:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ Upload alternativo também falhou:", error);
+    throw error;
+  }
+}
+
+// Envio do formulário - VERSÃO CORRIGIDA
+if (form) {
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    console.log("🚀 Iniciando envio do formulário...");
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      utils.showMessage(
+        "Usuário não autenticado. Faça login novamente.",
+        "error",
+        3000
+      );
+      return;
+    }
+
+    // Validar arquivos
+    if (!validateFiles()) {
+      console.log("❌ Validação de arquivos falhou");
+      return;
+    }
+
+    try {
+      // Mostrar estado de loading no botão
+      const submitBtn = form.querySelector(".btn-submit");
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = "⏳ Publicando...";
+      submitBtn.disabled = true;
+
+      utils.showMessage("Enviando artigo...", "success", 2000);
+
+      // Criar FormData para envio
+      const formData = new FormData();
+
+      // Dados básicos - CORRIGIDO: usar nomes consistentes
+      formData.append(
+        "nomeArtista",
+        document.getElementById("nome-artista").value
+      );
+      formData.append("tempoVida", document.getElementById("tempo-vida").value);
+      formData.append(
+        "conteudoArtigo",
+        document.getElementById("conteudo-artigo").value
+      );
+
+      // Imagem da artista - CORRIGIDO
+      const imagemArtista = document.getElementById("imagem-artista").files[0];
+      if (imagemArtista) {
+        formData.append("imagemArtista", imagemArtista);
+      }
+
+      // Autores - CORRIGIDO: usar estrutura correta
+      const autoresNomes = document.querySelectorAll(
+        'input[name="autor-nome[]"]'
+      );
+      const autoresImagens = document.querySelectorAll(
+        'input[name="autor-imagem[]"]'
+      );
+
+      autoresNomes.forEach((nomeInput, index) => {
+        if (nomeInput.value.trim()) {
+          formData.append(`autores[${index}][nome]`, nomeInput.value.trim());
+
+          if (autoresImagens[index] && autoresImagens[index].files[0]) {
+            formData.append(
+              `autores[${index}][imagem]`,
+              autoresImagens[index].files[0]
+            );
+          }
+        }
+      });
+
+      // Arquivos PDF - CORRIGIDO
+      const verbeteFile = document.getElementById("verbete").files[0];
+      const premiacoesFile = document.getElementById("premiacoes").files[0];
+
+      if (verbeteFile) formData.append("verbete", verbeteFile);
+      if (premiacoesFile) formData.append("premiacoes", premiacoesFile);
+
+      // Imagens múltiplas - CORRIGIDO
+      const imagensFiles = document.getElementById("imagens").files;
+      for (let i = 0; i < imagensFiles.length; i++) {
+        formData.append("imagens", imagensFiles[i]);
+      }
+
+      console.log("📤 Enviando formulário com dados:", {
+        nomeArtista: document.getElementById("nome-artista").value,
+        tempoVida: document.getElementById("tempo-vida").value,
+        conteudoArtigo:
+          document.getElementById("conteudo-artigo").value.substring(0, 100) +
+          "...",
+        autores: Array.from(autoresNomes).map((a) => a.value),
+        arquivos: {
+          imagemArtista: imagemArtista?.name,
+          verbete: verbeteFile?.name,
+          premiacoes: premiacoesFile?.name,
+          imagens: Array.from(imagensFiles).map((f) => f.name),
+        },
+      });
+
+      // DEBUG: Verificar FormData
+      console.log("📦 FormData contents:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": ", pair[1]);
+      }
+
+      // Enviar para a API - CORRIGIDO: usar endpoint correto
+      let response;
+      try {
+        console.log("🔄 Tentando enviar para API...");
+        response = await api.post("/artigos/artigos-completos", formData);
+        console.log("✅ Resposta da API:", response);
+      } catch (firstError) {
+        console.log(
+          "🔄 Primeira tentativa falhou, usando fallback...",
+          firstError
+        );
+        response = await tryAlternativeUpload(formData);
+      }
+
+      if (response && response.id) {
+        utils.showMessage("✅ Artigo publicado com sucesso!", "success", 3000);
+
+        // Resetar formulário
+        form.reset();
+        resetFileIndicators();
+        resetAutores();
+
+        // Restaurar botão
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        // Redirecionar para o artigo após 2 segundos
+        setTimeout(() => {
+          window.location.href = `artigo.html?id=${response.id}`;
+        }, 2000);
+      } else {
+        throw new Error("Resposta inválida do servidor");
+      }
+    } catch (error) {
+      console.error("❌ Erro ao publicar artigo:", error);
+
+      // Restaurar botão
+      const submitBtn = form.querySelector(".btn-submit");
+      submitBtn.innerHTML = "Publicar Artigo Completo";
+      submitBtn.disabled = false;
+
+      // Mensagem de erro mais específica
+      let errorMessage = "Erro ao publicar artigo";
+      if (error.message.includes("404")) {
+        errorMessage =
+          "Serviço temporariamente indisponível. Verifique se o servidor está rodando.";
+      } else if (error.message.includes("413")) {
+        errorMessage =
+          "Arquivos muito grandes. Reduza o tamanho e tente novamente.";
+      } else if (error.message.includes("500")) {
+        errorMessage =
+          "Erro interno do servidor. Tente novamente em alguns minutos.";
+      } else if (error.message.includes("Network Error")) {
+        errorMessage =
+          "Erro de conexão. Verifique sua internet e se o servidor está rodando.";
+      } else if (
+        error.message.includes("401") ||
+        error.message.includes("403")
+      ) {
+        errorMessage =
+          "Acesso não autorizado. Verifique se você está logado como administrador.";
+      } else {
+        errorMessage = error.message || "Erro ao publicar artigo";
+      }
+
+      utils.showMessage(errorMessage, "error", 5000);
+    }
+  });
 }
 
 // Variáveis globais
 let autorCount = 1;
 
 // Inicialização quando o DOM carregar
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM Carregado - Inicializando página ADM');
-    
-    // Inicializar sistema de informações
-    InfoSystem.init();
-    
-    const form = document.getElementById('form-artigo-completo');
-    const autoresContainer = document.getElementById('autores-container');
-    const btnAdicionarAutor = document.getElementById('adicionar-autor');
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("🚀 DOM Carregado - Inicializando página ADM");
 
-    // Configurar indicadores de arquivo
-    setupFileUploadIndicators();
+  // Inicializar sistema de informações
+  InfoSystem.init();
 
-    // Adicionar autor dinamicamente
-    if (btnAdicionarAutor) {
-        btnAdicionarAutor.addEventListener('click', function() {
-            if (autorCount >= 3) {
-                utils.showMessage('Máximo de 3 autores permitidos', 'error', 3000);
-                return;
-            }
+  const form = document.getElementById("form-artigo-completo");
+  const autoresContainer = document.getElementById("autores-container");
+  const btnAdicionarAutor = document.getElementById("adicionar-autor");
 
-            autorCount++;
-            const autorDiv = document.createElement('div');
-            autorDiv.className = 'autor-group';
-            autorDiv.dataset.autorId = autorCount;
-           
-            const numeroAutor = getAutorNumber(autorCount);
-           
-            autorDiv.innerHTML = `
+  function setupFileUploadIndicators() {
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+      input.addEventListener("change", function () {
+        const statusElement = this.parentElement.querySelector(".file-status");
+        if (this.files.length > 0) {
+          if (this.multiple) {
+            statusElement.textContent = `✔ ${this.files.length} arquivo(s) selecionado(s)`;
+          } else {
+            statusElement.textContent = "✔ " + this.files[0].name;
+          }
+          statusElement.style.color = "#27ae60";
+          statusElement.style.fontWeight = "600";
+          // Remover borda de erro se houver
+          this.style.borderColor = "";
+        } else {
+          statusElement.textContent = "Anexar arquivo";
+          statusElement.style.color = "";
+          statusElement.style.fontWeight = "";
+        }
+      });
+
+      // Adicionar validação visual
+      input.addEventListener("invalid", function () {
+        this.style.borderColor = "var(--accent)";
+      });
+
+      input.addEventListener("focus", function () {
+        this.style.borderColor = "";
+      });
+    });
+  }
+
+  function setupFileUploadForElement(element) {
+    element.querySelectorAll('input[type="file"]').forEach((input) => {
+      input.addEventListener("change", function () {
+        const statusElement = this.parentElement.querySelector(".file-status");
+        if (this.files.length > 0) {
+          statusElement.textContent = "✔ " + this.files[0].name;
+          statusElement.style.color = "#27ae60";
+          statusElement.style.fontWeight = "600";
+          this.style.borderColor = "";
+        }
+      });
+    });
+  }
+
+  // Configurar indicadores de arquivo
+  setupFileUploadIndicators();
+
+  // Adicionar autor dinamicamente
+  if (btnAdicionarAutor) {
+    btnAdicionarAutor.addEventListener("click", function () {
+      if (autorCount >= 3) {
+        utils.showMessage("Máximo de 3 autores permitidos", "error", 3000);
+        return;
+      }
+
+      autorCount++;
+      const autorDiv = document.createElement("div");
+      autorDiv.className = "autor-group";
+      autorDiv.dataset.autorId = autorCount;
+
+      const numeroAutor = getAutorNumber(autorCount);
+
+      autorDiv.innerHTML = `
                 <div class="autor-header">
                     <span class="autor-number">${numeroAutor}</span>
                     <h3>Autor ${autorCount}</h3>
@@ -473,133 +765,160 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            autoresContainer.appendChild(autorDiv);
-            setupFileUploadForElement(autorDiv);
-           
-            // Re-inicializar sistema de informações para os novos botões
-            InfoSystem.setupInfoButtons();
-           
-            // Atualizar visibilidade do botão de adicionar
-            updateAddButtonVisibility();
+      autoresContainer.appendChild(autorDiv);
+      setupFileUploadForElement(autorDiv);
+
+      // Re-inicializar sistema de informações para os novos botões
+      InfoSystem.setupInfoButtons();
+
+      // Atualizar visibilidade do botão de adicionar
+      updateAddButtonVisibility();
+    });
+  }
+
+  // Envio do formulário
+  if (form) {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        utils.showMessage("Usuário não autenticado", "error", 3000);
+        return;
+      }
+
+      // Validar arquivos
+      if (!validateFiles()) {
+        return;
+      }
+
+      try {
+        utils.showMessage("Enviando artigo...", "success", 2000);
+
+        // Criar FormData para envio
+        const formData = new FormData();
+
+        // Dados básicos
+        formData.append(
+          "nomeArtista",
+          document.getElementById("nome-artista").value
+        );
+
+        formData.append(
+          "conteudoArtigo",
+          document.getElementById("conteudo-artigo").value
+        );
+
+        formData.append(
+          "tempoVida",
+          document.getElementById("tempo-vida").value
+        );
+
+        // Imagem da artista
+        const imagemArtista =
+          document.getElementById("imagem-artista").files[0];
+        if (imagemArtista) {
+          formData.append("imagemArtista", imagemArtista);
+        }
+
+        // Autores
+        const autoresNomes = document.querySelectorAll(
+          'input[name="autor-nome[]"]'
+        );
+        const autoresImagens = document.querySelectorAll(
+          'input[name="autor-imagem[]"]'
+        );
+
+        autoresNomes.forEach((nomeInput, index) => {
+          if (nomeInput.value.trim()) {
+            formData.append(`autores[${index}][nome]`, nomeInput.value);
+            if (autoresImagens[index] && autoresImagens[index].files[0]) {
+              formData.append(
+                `autores[${index}][imagem]`,
+                autoresImagens[index].files[0]
+              );
+            }
+          }
         });
-    }
 
-    // Envio do formulário
-    if (form) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-           
-            const token = localStorage.getItem('token');
-            if (!token) {
-                utils.showMessage('Usuário não autenticado', 'error', 3000);
-                return;
-            }
+        // Arquivos
+        const verbeteFile = document.getElementById("verbete").files[0];
+        const premiacoesFile = document.getElementById("premiacoes").files[0];
 
-            // Validar arquivos
-            if (!validateFiles()) {
-                return;
-            }
+        if (verbeteFile) formData.append("verbete", verbeteFile);
+        if (premiacoesFile) formData.append("premiacoes", premiacoesFile);
 
-            try {
-                utils.showMessage('Enviando artigo...', 'success', 2000);
-               
-                // Criar FormData para envio
-                const formData = new FormData();
-               
-                // Dados básicos
-                formData.append('nomeArtista', document.getElementById('nome-artista').value);
-                formData.append('tempoVida', document.getElementById('tempo-vida').value);
-               
-                // Imagem da artista
-                const imagemArtista = document.getElementById('imagem-artista').files[0];
-                if (imagemArtista) {
-                    formData.append('imagemArtista', imagemArtista);
-                }
-               
-                // Autores
-                const autoresNomes = document.querySelectorAll('input[name="autor-nome[]"]');
-                const autoresImagens = document.querySelectorAll('input[name="autor-imagem[]"]');
-               
-                autoresNomes.forEach((nomeInput, index) => {
-                    if (nomeInput.value.trim()) {
-                        formData.append(`autores[${index}][nome]`, nomeInput.value);
-                        if (autoresImagens[index] && autoresImagens[index].files[0]) {
-                            formData.append(`autores[${index}][imagem]`, autoresImagens[index].files[0]);
-                        }
-                    }
-                });
-               
-                // Arquivos
-                const verbeteFile = document.getElementById('verbete').files[0];
-                const premiacoesFile = document.getElementById('premiacoes').files[0];
-               
-                if (verbeteFile) formData.append('verbete', verbeteFile);
-                if (premiacoesFile) formData.append('premiacoes', premiacoesFile);
-               
-                // Imagens múltiplas
-                const imagensFiles = document.getElementById('imagens').files;
-                for (let i = 0; i < imagensFiles.length; i++) {
-                    formData.append('imagens', imagensFiles[i]);
-                }
+        // Imagens múltiplas
+        const imagensFiles = document.getElementById("imagens").files;
+        for (let i = 0; i < imagensFiles.length; i++) {
+          formData.append("imagens", imagensFiles[i]);
+        }
 
-                console.log('📤 Enviando formulário com dados:', {
-                    nomeArtista: document.getElementById('nome-artista').value,
-                    tempoVida: document.getElementById('tempo-vida').value,
-                    autores: Array.from(autoresNomes).map(a => a.value),
-                    arquivos: {
-                        imagemArtista: imagemArtista?.name,
-                        verbete: verbeteFile?.name,
-                        premiacoes: premiacoesFile?.name,
-                        imagens: Array.from(imagensFiles).map(f => f.name)
-                    }
-                });
-
-                // Enviar para a API
-                let response;
-                try {
-                    response = await api.post('/artigos/artigos-completos', formData);
-                } catch (firstError) {
-                    console.log('🔄 Primeira tentativa falhou, usando fallback...', firstError);
-                    response = await tryAlternativeUpload(formData);
-                }
-               
-                if (response && response.id) {
-                    utils.showMessage('Artigo publicado com sucesso!', 'success', 3000);
-                    form.reset();
-                    resetFileIndicators();
-                    resetAutores();
-                   
-                    // Redirecionar para o artigo após 2 segundos
-                    setTimeout(() => {
-                        window.location.href = `artigo.html?id=${response.id}`;
-                    }, 2000);
-                } else {
-                    throw new Error('Resposta inválida do servidor');
-                }
-               
-            } catch (error) {
-                console.error('Erro ao publicar artigo:', error);
-               
-                let errorMessage = 'Erro ao publicar artigo';
-                if (error.message.includes('404')) {
-                    errorMessage = 'Serviço temporariamente indisponível. Verifique se o servidor está rodando.';
-                } else if (error.message.includes('413')) {
-                    errorMessage = 'Arquivos muito grandes. Reduza o tamanho e tente novamente.';
-                } else if (error.message.includes('500')) {
-                    errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
-                } else if (error.message.includes('Network Error')) {
-                    errorMessage = 'Erro de conexão. Verifique sua internet e se o servidor está rodando.';
-                } else {
-                    errorMessage = error.message || 'Erro ao publicar artigo';
-                }
-               
-                utils.showMessage(errorMessage, 'error', 5000);
-            }
+        console.log("📤 Enviando formulário com dados:", {
+          nomeArtista: document.getElementById("nome-artista").value,
+          tempoVida: document.getElementById("tempo-vida").value,
+          conteudoArtigo:
+            document.getElementById("conteudo-artigo").value.substring(0, 100) +
+            "...", // Primeiros 100 chars
+          autores: Array.from(autoresNomes).map((a) => a.value),
+          arquivos: {
+            imagemArtista: imagemArtista?.name,
+            verbete: verbeteFile?.name,
+            premiacoes: premiacoesFile?.name,
+            imagens: Array.from(imagensFiles).map((f) => f.name),
+          },
         });
-    }
 
-    // Inicializar
-    updateAddButtonVisibility();
+        // Enviar para a API
+        let response;
+        try {
+          response = await api.post("/artigos/artigos-completos", formData);
+        } catch (firstError) {
+          console.log(
+            "🔄 Primeira tentativa falhou, usando fallback...",
+            firstError
+          );
+          response = await tryAlternativeUpload(formData);
+        }
+
+        if (response && response.id) {
+          utils.showMessage("Artigo publicado com sucesso!", "success", 3000);
+          form.reset();
+          resetFileIndicators();
+          resetAutores();
+
+          // Redirecionar para o artigo após 2 segundos
+          setTimeout(() => {
+            window.location.href = `artigo.html?id=${response.id}`;
+          }, 2000);
+        } else {
+          throw new Error("Resposta inválida do servidor");
+        }
+      } catch (error) {
+        console.error("Erro ao publicar artigo:", error);
+
+        let errorMessage = "Erro ao publicar artigo";
+        if (error.message.includes("404")) {
+          errorMessage =
+            "Serviço temporariamente indisponível. Verifique se o servidor está rodando.";
+        } else if (error.message.includes("413")) {
+          errorMessage =
+            "Arquivos muito grandes. Reduza o tamanho e tente novamente.";
+        } else if (error.message.includes("500")) {
+          errorMessage =
+            "Erro interno do servidor. Tente novamente em alguns minutos.";
+        } else if (error.message.includes("Network Error")) {
+          errorMessage =
+            "Erro de conexão. Verifique sua internet e se o servidor está rodando.";
+        } else {
+          errorMessage = error.message || "Erro ao publicar artigo";
+        }
+
+        utils.showMessage(errorMessage, "error", 5000);
+      }
+    });
+  }
+  
+  // Inicializar
+  updateAddButtonVisibility();
 });
-
-// ... (restante das funções auxiliares permanecem as mesmas)
