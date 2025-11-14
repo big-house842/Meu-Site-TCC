@@ -1775,3 +1775,55 @@ body > footer:not(:first-of-type) {
 .file-upload-group input:focus:invalid {
     box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1) !important;
 }
+
+/* Estilos para melhorar a experiência de upload */
+.file-upload-group {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.file-upload-group:hover {
+    transform: translateY(-2px);
+}
+
+.file-upload-group input[type="file"] {
+    cursor: pointer;
+}
+
+.file-status {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-status:hover {
+    background: #f8fafc;
+}
+
+/* Animações para confirmação */
+@keyfile-status pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.file-status.confirmed {
+    animation: pulse 0.5s ease;
+}
+
+/* Melhorar visual dos grupos de arquivo */
+.file-upload-group {
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+}
+
+.file-upload-group:hover {
+    border-color: var(--primary);
+}
+
+/* Estilo para quando arquivo é selecionado */
+.file-upload-group.has-file {
+    border-color: var(--success);
+    background: #f0fff4;
+}
