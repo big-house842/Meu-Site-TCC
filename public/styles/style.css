@@ -771,13 +771,12 @@ body {
   border: 1px solid #f5c6cb;
 }
 
-/* ===== CAROUSEL ===== */
+/* ===== CAROUSEL CORRIGIDO ===== */
 .artists-carousel-container {
   position: relative;
   max-width: 1200px;
   margin: 3rem auto;
   padding: 0 60px;
-  overflow: hidden;
 }
 
 .artists-carousel {
@@ -803,27 +802,20 @@ body {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
 }
 
 .artist-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.artist-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  height: 100%;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .artist-image-container {
   position: relative;
   width: 100%;
-  height: 200px; /* 600 / 3 = 200 para manter proporção */
+  height: 280px; /* Altura fixa para imagens 1200x600 */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -831,21 +823,32 @@ body {
   background: #f8fafc;
 }
 
-/* IMAGEM SEM ZOOM - APENAS ENCAIXE */
+/* IMAGEM SEM CORTE - CONTAIN */
 .artist-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Mudado de 'cover' para 'contain' - SEM ZOOM */
-  transition: none; /* Remove qualquer transição */
+  object-fit: contain; /* Mudado para contain - SEM CORTE */
+  transition: transform 0.8s ease;
+  padding: 10px; /* Espaço ao redor da imagem */
 }
 
-/* REMOVER COMPLETAMENTE O ZOOM NO HOVER */
 .artist-card:hover .artist-image {
-  transform: none; /* Remove qualquer transformação */
+  transform: scale(1.05);
 }
 
 .artist-image-overlay {
-  display: none; /* Remove o overlay se não for necessário */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.artist-card:hover .artist-image-overlay {
+  opacity: 1;
 }
 
 .artist-info {
@@ -884,6 +887,100 @@ body {
   transform: translateX(5px);
 }
 
+/* Estado vazio */
+.artists-empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.artists-empty-state h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Carousel automático corrigido */
+.automatic-carousel {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  margin: 3rem 0;
+  position: relative;
+  background: #f8fafc;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8f0;
+}
+
+.carousel-itens {
+  display: flex;
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 300%; /* Para 3 slides */
+  height: 500px; /* Altura aumentada para melhor visualização */
+}
+
+.img-carousel {
+  width: 33.333%; /* Cada slide ocupa 1/3 do container */
+  height: 100%;
+  object-fit: contain; /* SEM CORTE - mostra imagem completa */
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 40px; /* Mais espaço ao redor */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+/* Efeito sutil no hover */
+.automatic-carousel:hover .img-carousel {
+  transform: scale(1.02);
+}
+
+/* Indicadores de progresso do carousel automático */
+.carousel-progress {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.progress-dot.active {
+  background: var(--primary);
+  border-color: white;
+  transform: scale(1.2);
+}
+
+/* Overlay para melhor legibilidade */
+.carousel-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent 0%, rgba(0,0,0,0.3) 100%);
+  height: 80px;
+  pointer-events: none;
+}
+
+/* Setas de navegação */
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -914,6 +1011,7 @@ body {
   background: #cbd5e0;
   cursor: not-allowed;
   opacity: 0.5;
+  transform: translateY(-50%) scale(1);
 }
 
 .carousel-arrow-left {
@@ -924,6 +1022,7 @@ body {
   right: 10px;
 }
 
+/* Indicadores do carousel */
 .carousel-dots {
   display: flex;
   justify-content: center;
@@ -951,40 +1050,17 @@ body {
   transform: scale(1.1);
 }
 
+/* Loading state */
+.artists-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+}
+
 /* ===== ANIMAÇÕES ===== */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Garantir que as imagens do carousel automático fiquem alinhadas */
-.automatic-carousel {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 12px;
-  margin: 2rem 0;
-  position: relative;
-}
-
-.carousel-itens {
-  display: flex;
-  transition: transform 0.8s ease;
-  width: 300%;
-}
-
-.img-carousel {
-  width: 33.333%;
-  height: 400px;
-  object-fit: contain; /* Mudado para contain - SEM ZOOM */
-  flex-shrink: 0;
-  background: #f8fafc;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* REMOVER QUALQUER EFEITO DE ZOOM NAS IMAGENS DO CAROUSEL AUTOMÁTICO */
-.img-carousel:hover {
-  transform: none;
 }
 
 /* ===== RESPONSIVIDADE ===== */
@@ -997,9 +1073,11 @@ body {
   .artists-carousel-container {
     padding: 0 50px;
   }
-}
+  
+  .artist-image-container {
+    height: 250px;
+  }
 
-@media (max-width: 768px) {
   .navbar-content {
     flex-direction: column;
     gap: 1rem;
@@ -1045,15 +1123,6 @@ body {
     padding: 1.5rem;
   }
 
-  .artist-card {
-    flex: 0 0 100%;
-    min-width: 250px;
-  }
-
-  .artists-carousel-container {
-    padding: 0 40px;
-  }
-
   .carousel-arrow {
     width: 40px;
     height: 40px;
@@ -1084,6 +1153,45 @@ body {
   .img-carousel {
     height: 300px;
   }
+
+  .carousel-itens {
+    height: 400px;
+  }
+
+
+}
+
+@media (max-width: 768px) {
+  .artists-carousel-container {
+    padding: 0 40px;
+  }
+  
+  .artist-card {
+    flex: 0 0 100%;
+    min-width: 250px;
+  }
+  
+  .artist-image-container {
+    height: 220px;
+  }
+  
+  .carousel-itens {
+    height: 350px;
+  }
+
+  .carousel-progress {
+    bottom: 15px;
+  }
+
+  .img-carousel {
+    height: 300px;
+  }
+  
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1108,15 +1216,33 @@ body {
   .artists-carousel-container {
     padding: 0 20px;
   }
-
+  
   .artists-carousel-track {
     gap: 1rem;
     padding: 0 1rem;
   }
+  
+  .artist-image-container {
+    height: 200px;
+  }
 
-  .img-carousel {
+  .carousel-itens {
     height: 250px;
   }
+  
+  .img-carousel {
+    padding: 150px;
+  }
+
+  .carousel-progress {
+    bottom: 10px;
+  }
+  
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+  }
+
 }
 
 /* Garantir que não haja elementos duplicados */
@@ -1371,215 +1497,6 @@ body > footer:not(:first-of-type) {
   font-size: 1rem;
   opacity: 0.8;
   font-weight: 500;
-}
-
-/* ===== CAROUSEL CORRIGIDO ===== */
-.artists-carousel-container {
-  position: relative;
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 60px;
-}
-
-.artists-carousel {
-  overflow: hidden;
-  border-radius: 20px;
-  position: relative;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  padding: 2rem 0;
-}
-
-.artists-carousel-track {
-  display: flex;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  gap: 2rem;
-  padding: 0 2rem;
-  will-change: transform;
-}
-
-.artist-card {
-  flex: 0 0 calc(33.333% - 1.5rem);
-  min-width: 300px;
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  position: relative;
-}
-
-.artist-card:hover {
-  transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-}
-
-.artist-image-container {
-  position: relative;
-  width: 100%;
-  height: 280px;
-  overflow: hidden;
-}
-
-/* Prevenir zoom excessivo nas imagens */
-.artist-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-  transform-origin: center center;
-}
-
-.artist-card:hover .artist-image {
-  transform: scale(1.05); /* Zoom mais suave */
-}
-
-.artist-image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.artist-card:hover .artist-image-overlay {
-  opacity: 1;
-}
-
-.artist-info {
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.artist-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
-  font-family: 'Playfair Display', serif;
-}
-
-.artist-bio {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.artist-cta {
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.artist-card:hover .artist-cta {
-  transform: translateX(5px);
-}
-
-.carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--primary);
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(33, 87, 196, 0.3);
-}
-
-.carousel-arrow:hover:not(:disabled) {
-  background: #1a4fb3;
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 6px 20px rgba(33, 87, 196, 0.4);
-}
-
-.carousel-arrow:disabled {
-  background: #cbd5e0;
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.carousel-arrow-left {
-  left: 10px;
-}
-
-.carousel-arrow-right {
-  right: 10px;
-}
-
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 1024px) {
-  .artist-card {
-    flex: 0 0 calc(50% - 1rem);
-  }
-  
-  .presentation-title {
-    font-size: 2.2rem;
-  }
-  
-  .about-project-title {
-    font-size: 2.2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .artists-carousel-container {
-    padding: 0 40px;
-  }
-  
-  .artist-card {
-    flex: 0 0 100%;
-  }
-  
-  .presentation-section,
-  .objectives-section,
-  .about-project-section {
-    padding: 2rem 1.5rem;
-    margin: 1.5rem 0;
-  }
-  
-  .presentation-title {
-    font-size: 1.8rem;
-  }
-  
-  .objectives-title,
-  .about-project-title {
-    font-size: 1.8rem;
-  }
-  
-  .carousel-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .artists-carousel-container {
-    padding: 0 20px;
-  }
-  
-  .artists-carousel-track {
-    gap: 1rem;
-    padding: 0 1rem;
-  }
 }
 
 /* ===== MODAL DE INFORMAÇÕES ===== */

@@ -1,44 +1,45 @@
+// auth-frontend.js - Versão corrigida para modais
+
 // Função melhorada para mostrar mensagens
-function showAuthMessage(modalId, message, type = "error") {
+function showAuthMessage(modalId, message, type = 'error') {
   const messageEl = document.querySelector(`#${modalId} .auth-message`);
   if (messageEl) {
     messageEl.textContent = message;
     messageEl.className = `auth-message ${type}`;
-
+    messageEl.style.display = 'block';
+   
     // Auto-ocultar mensagens de sucesso
-    if (type === "success") {
+    if (type === 'success') {
       setTimeout(() => {
-        messageEl.style.display = "none";
+        messageEl.style.display = 'none';
       }, 3000);
     }
   }
 }
 
-// Validação de formulário melhorada
+// Validação de formulário
 function validateForm(form) {
-  const inputs = form.querySelectorAll("input[required]");
+  const inputs = form.querySelectorAll('input[required]');
   let isValid = true;
-
-  inputs.forEach((input) => {
+ 
+  inputs.forEach(input => {
     if (!input.value.trim()) {
-      input.style.borderColor = "var(--accent)";
+      input.style.borderColor = 'var(--accent)';
       isValid = false;
     } else {
-      input.style.borderColor = "";
+      input.style.borderColor = '';
     }
   });
-
+ 
   return isValid;
 }
 
-// Função de login atualizada
+// Função de login
 async function handleLogin(form) {
+  console.log('🔐 Iniciando processo de login...');
+  
   if (!validateForm(form)) {
-    showAuthMessage(
-      "loginMessage",
-      "Por favor, preencha todos os campos obrigatórios",
-      "error"
-    );
+    showAuthMessage('loginMessage', 'Por favor, preencha todos os campos obrigatórios', 'error');
     return;
   }
 
@@ -48,61 +49,50 @@ async function handleLogin(form) {
 
   // Estado de loading
   setButtonLoading(button, true);
-  showAuthMessage("loginMessage", ""); // Limpar mensagens anteriores
+  showAuthMessage('loginMessage', '', 'success'); // Limpar mensagens
 
   try {
-    console.log("🔐 Tentando login...");
+    console.log('📤 Enviando dados de login...');
     const res = await api.post("/login", { email, senha });
-
-    showAuthMessage("loginMessage", "Login realizado com sucesso!", "success");
-
+   
+    console.log('✅ Login bem-sucedido:', res);
+    showAuthMessage('loginMessage', 'Login realizado com sucesso!', 'success');
+   
     // Armazenar token e dados do usuário
     localStorage.setItem("token", res.token);
     localStorage.setItem("user", JSON.stringify(res.user));
-
-    // FORÇAR ATUALIZAÇÃO DA NAVBAR IMEDIATAMENTE
-    if (typeof updateNavbar === "function") {
-      updateNavbar();
-    }
-
+   
     // Fechar modal após sucesso
     setTimeout(() => {
-      ModalSystem.close("loginModal");
-
-      // ATUALIZAR NOVAMENTE PARA GARANTIR
+      ModalSystem.close('loginModal');
+     
+      // Atualizar navbar
       if (typeof updateNavbar === "function") {
         updateNavbar();
       }
-
-      // Redirecionar se estiver na página de login
-      if (window.location.pathname.includes("login.html")) {
-        window.location.href = "index.html";
-      }
+     
+      // Recarregar a página para atualizar o estado
+      window.location.reload();
     }, 1500);
+   
   } catch (err) {
     console.error("❌ Erro no login:", err);
-    showAuthMessage(
-      "loginMessage",
-      err.message || "Erro ao fazer login. Verifique suas credenciais.",
-      "error"
-    );
+    showAuthMessage('loginMessage', err.message || "Erro ao fazer login. Verifique suas credenciais.", 'error');
   } finally {
     setButtonLoading(button, false);
   }
 }
 
-// Função de registro atualizada
+// Função de registro
 async function handleRegister(form) {
+  console.log('📝 Iniciando processo de registro...');
+  
   if (!validateForm(form)) {
-    showAuthMessage(
-      "registerMessage",
-      "Por favor, preencha todos os campos obrigatórios",
-      "error"
-    );
+    showAuthMessage('registerMessage', 'Por favor, preencha todos os campos obrigatórios', 'error');
     return;
   }
 
-  const inputs = form.querySelectorAll("input");
+  const inputs = form.querySelectorAll('input');
   const nome = inputs[0].value.trim();
   const email = inputs[1].value.trim();
   const senha = inputs[2].value.trim();
@@ -110,107 +100,100 @@ async function handleRegister(form) {
 
   // Validação de senha
   if (senha.length < 6) {
-    showAuthMessage(
-      "registerMessage",
-      "A senha deve ter pelo menos 6 caracteres",
-      "error"
-    );
+    showAuthMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
     return;
   }
 
   // Estado de loading
   setButtonLoading(button, true);
-  showAuthMessage("registerMessage", ""); // Limpar mensagens anteriores
+  showAuthMessage('registerMessage', '', 'success');
 
   try {
-    console.log("📝 Tentando criar conta...");
+    console.log('📤 Enviando dados de registro...');
     const res = await api.post("/register", { nome, email, senha });
-
-    showAuthMessage(
-      "registerMessage",
-      "Conta criada com sucesso! Redirecionando...",
-      "success"
-    );
-
+   
+    console.log('✅ Registro bem-sucedido:', res);
+    showAuthMessage('registerMessage', 'Conta criada com sucesso! Redirecionando...', 'success');
+   
     // Fechar modal e abrir login após sucesso
     setTimeout(() => {
-      ModalSystem.close("registerModal");
-      ModalSystem.open("loginModal");
-
+      ModalSystem.close('registerModal');
+      ModalSystem.open('loginModal');
+     
       // Preencher email automaticamente
-      const loginEmail = document.querySelector(
-        '#loginModal input[type="email"]'
-      );
+      const loginEmail = document.querySelector('#loginModal input[type="email"]');
       if (loginEmail) loginEmail.value = email;
     }, 2000);
+   
   } catch (err) {
     console.error("❌ Erro no cadastro:", err);
-    showAuthMessage(
-      "registerMessage",
-      err.message || "Erro ao criar conta. Tente novamente.",
-      "error"
-    );
+    showAuthMessage('registerMessage', err.message || "Erro ao criar conta. Tente novamente.", 'error');
   } finally {
     setButtonLoading(button, false);
   }
 }
 
-// Função de loading atualizada
+// Função de loading
 function setButtonLoading(button, isLoading) {
   if (isLoading) {
-    button.classList.add("loading");
+    button.classList.add('loading');
     button.disabled = true;
   } else {
-    button.classList.remove("loading");
+    button.classList.remove('loading');
     button.disabled = false;
+  }
+}
+
+// Configurar event listeners para os formulários dos modais
+function setupModalForms() {
+  console.log('🔄 Configurando formulários dos modais...');
+
+  // Login Modal
+  const loginForm = document.querySelector('#loginModal .login-form');
+  if (loginForm) {
+    console.log('✅ Formulário de login encontrado no modal');
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('🎯 Submit do login modal capturado!');
+      handleLogin(loginForm);
+    });
+  }
+
+  // Register Modal
+  const registerForm = document.querySelector('#registerModal .register-form');
+  if (registerForm) {
+    console.log('✅ Formulário de registro encontrado no modal');
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('🎯 Submit do registro modal capturado!');
+      handleRegister(registerForm);
+    });
   }
 }
 
 // Funções globais para abrir modais
 window.openLoginModal = () => {
-  console.log("📲 Abrindo modal de login");
-  ModalSystem.open("loginModal");
+  console.log('📲 Abrindo modal de login');
+  ModalSystem.open('loginModal');
 };
 
 window.openRegisterModal = () => {
-  console.log("📲 Abrindo modal de registro");
-  ModalSystem.open("registerModal");
+  console.log('📲 Abrindo modal de registro');
+  ModalSystem.open('registerModal');
 };
 
-// Tornar as funções globais para serem acessadas de components.js
+// Tornar as funções globais
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
 window.setButtonLoading = setButtonLoading;
+window.setupModalForms = setupModalForms;
 
-// Configurar formulários standalone (páginas separadas)
-document.addEventListener("DOMContentLoaded", () => {
-  console.log(
-    "🔐 auth-frontend.js carregado - Configurando formulários standalone"
-  );
-
-  // Configurar formulário de login standalone (se existir)
-  const standaloneLoginForm = document.querySelector(
-    ".login-form:not(.modal .login-form)"
-  );
-  if (standaloneLoginForm) {
-    console.log("✅ Formulário de login standalone encontrado");
-    standaloneLoginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      console.log("📝 Submit do login standalone detectado");
-      await handleLogin(standaloneLoginForm);
-    });
-  }
-
-  // Configurar formulário de registro standalone (se existir)
-  const standaloneRegisterForm = document.querySelector(
-    ".register-form:not(.modal .register-form)"
-  );
-  if (standaloneRegisterForm) {
-    console.log("✅ Formulário de registro standalone encontrado");
-    standaloneRegisterForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      console.log("📝 Submit do registro standalone detectado");
-      await handleRegister(standaloneRegisterForm);
-    });
-  }
+// Configurar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔐 auth-frontend.js carregado');
+  
+  // Configurar os forms após um pequeno delay para garantir que os modais foram criados
+  setTimeout(() => {
+    setupModalForms();
+  }, 1000);
 });

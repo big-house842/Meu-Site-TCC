@@ -17,46 +17,58 @@
     <div id="navbar"></div>
 
     <main class="container">
-      <!-- Seção de Apresentação -->
+      <!-- Substitua a seção do carousel automático por esta versão melhorada -->
       <section class="presentation-section">
-        <button class="section-button">
-          <span>Apresentação do nosso trabalho</span>
-        </button>
-        <div class="section-content">
-          <div class="presentation-content">
-            <div class="presentation-text">
-              <p>
-                Um projeto dedicado a documentar e celebrar a trajetória das
-                mulheres que contribuíram para as artes no estado do Paraná.
-              </p>
-            </div>
+        <div class="presentation-content">
+          <h1 class="presentation-title">
+            Dicionário das Artistas Paranaenses
+          </h1>
+          <p class="presentation-subtitle">
+            Um tributo às mulheres que moldaram a cultura e as artes do Paraná
+          </p>
+
+          <div class="presentation-text">
+            <p>
+              Em um cenário onde vozes femininas foram historicamente
+              silenciadas, surge uma iniciativa corajosa:
+              <strong>resgatar, preservar e celebrar</strong> o legado das
+              artistas paranaenses que transformaram nossa paisagem cultural.
+            </p>
           </div>
 
           <div class="presentation-highlight">
-            "A arte é a expressão mais pura da alma humana."
+            "A arte é a expressão mais pura da alma humana. E cada artista
+            mulher do Paraná carrega em sua obra a força de quem precisou ser
+            duas vezes mais talentosa para ser ouvida."
           </div>
 
-          <!-- Carousel Automático -->
+          <!-- CAROUSEL AUTOMÁTICO CORRIGIDO -->
           <div class="automatic-carousel">
             <div class="carousel-itens">
               <img
                 class="img-carousel"
                 src="imagens/carousel-1.jpg"
-                alt="Apresentação do projeto 1"
+                alt="Apresentação do projeto 1 - Obras de artistas paranaenses"
                 onerror="this.src='imagens/placeholder.jpg'"
               />
               <img
                 class="img-carousel"
                 src="imagens/carousel-2.jpg"
-                alt="Apresentação do projeto 2"
+                alt="Apresentação do projeto 2 - Exposições e mostras"
                 onerror="this.src='imagens/placeholder.jpg'"
               />
               <img
                 class="img-carousel"
                 src="imagens/carousel-3.jpg"
-                alt="Apresentação do projeto 3"
+                alt="Apresentação do projeto 3 - Pesquisa e documentação"
                 onerror="this.src='imagens/placeholder.jpg'"
               />
+            </div>
+            <div class="carousel-overlay"></div>
+            <div class="carousel-progress">
+              <div class="progress-dot active" data-slide="0"></div>
+              <div class="progress-dot" data-slide="1"></div>
+              <div class="progress-dot" data-slide="2"></div>
             </div>
           </div>
         </div>
@@ -143,5 +155,42 @@
     <script src="js/carousel.js"></script>
     <script src="js/main.js"></script>
     <script src="js/artistas.js"></script>
+
+    <!-- No final do body, antes de fechar </body> -->
+    <script>
+      // Debug dos modais
+      console.log("🐛 DEBUG - Status dos modais:");
+      console.log(
+        "- Modal login:",
+        document.getElementById("loginModal") ? "EXISTE" : "NÃO EXISTE"
+      );
+      console.log(
+        "- Modal register:",
+        document.getElementById("registerModal") ? "EXISTE" : "NÃO EXISTE"
+      );
+      console.log(
+        "- Form login:",
+        document.querySelector("#loginModal .login-form")
+          ? "EXISTE"
+          : "NÃO EXISTE"
+      );
+      console.log(
+        "- Form register:",
+        document.querySelector("#registerModal .register-form")
+          ? "EXISTE"
+          : "NÃO EXISTE"
+      );
+
+      // Teste manual
+      window.debugLogin = function () {
+        const testForm = document.querySelector("#loginModal .login-form");
+        if (testForm) {
+          testForm.querySelector('input[type="email"]').value =
+            "teste@email.com";
+          testForm.querySelector('input[type="password"]').value = "123456";
+          handleLogin(testForm);
+        }
+      };
+    </script>
   </body>
 </html>

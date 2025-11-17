@@ -125,12 +125,14 @@ class ModalSystem {
   // components.js - Modifique a função initAuthModals
 
   static initAuthModals() {
+    console.log('🔄 Inicializando modais de autenticação...');
+    
     // Modal de Login
     this.createModal(
       "loginModal",
       "Bem-vindo de Volta",
       `
-      <div class="auth-message" id="loginMessage"></div>
+      <div class="auth-message" id="loginMessage" style="display: none;"></div>
       <form class="auth-form login-form" novalidate>
         <div class="auth-input-group">
           <input type="email" placeholder="seu@email.com" required aria-required="true">
@@ -153,15 +155,15 @@ class ModalSystem {
           </a>
         </div>
       </form>
-    `
+      `
     );
-
+  
     // Modal de Registro
     this.createModal(
       "registerModal",
       "Criar Sua Conta",
       `
-      <div class="auth-message" id="registerMessage"></div>
+      <div class="auth-message" id="registerMessage" style="display: none;"></div>
       <form class="auth-form register-form" novalidate>
         <div class="auth-input-group">
           <input type="text" placeholder="Nome completo" required aria-required="true">
@@ -185,12 +187,24 @@ class ModalSystem {
           </a>
         </div>
       </form>
-    `
+      `
     );
-
-    this.setupAuthForms();
-    console.log("✅ Modais de autenticação modernizados");
+  
+    // Configurar os event listeners dos forms
+    if (typeof setupModalForms === 'function') {
+      console.log('✅ Configurando forms dos modais...');
+      setupModalForms();
+    } else {
+      console.log('⚠️ setupModalForms não disponível, tentando novamente em 1s...');
+      setTimeout(() => {
+        if (typeof setupModalForms === 'function') {
+          setupModalForms();
+        }
+      }, 1000);
+    }
   }
+
+  
   static setupAuthForms() {
     console.log("🔄 Configurando formulários dos modais...");
 
